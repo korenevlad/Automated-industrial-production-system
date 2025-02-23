@@ -1,41 +1,34 @@
 ﻿using System.Text.Json;
 using Confluent.Kafka;
 
-namespace MixingComponentsProducer;
+namespace CuttingArrayProducer;
 public class Program
 {
     public static async Task Main(string[] args)
     {
         var config = new ProducerConfig { BootstrapServers = "kafka:9093" };
-        var topic = "mixing_components_producer";
-        double[] temperature = { 45, 0.5};
-        double[] speed = { 50, 0.5};
-        
-        var timerDuration = TimeSpan.FromMinutes(5);
-        var startTime = DateTime.UtcNow;
+        var topic = "cutting_array_producer";
+        double[] pressure = { 35, 0.5};
+        double[] speed = { 4000, 50};
         
         using (var producer = new ProducerBuilder<Null, string>(config).Build())
         {
             while (true)
             {
-                var elapsedTime = DateTime.UtcNow - startTime;
-                var remainingTime = timerDuration - elapsedTime;
-
                 var sensorData = new
                 {
-                    Temperature = GenerateBoxMuller(temperature[0], temperature[1]),
+                    Pressure = GenerateBoxMuller(pressure[0], pressure[1]),
                     Speed = GenerateBoxMuller(speed[0], speed[1]),
-                    Time = remainingTime.ToString("c")
                 };
                 string message = JsonSerializer.Serialize(sensorData);
                 try
                 {
                     var deliveryResult = await producer.ProduceAsync(topic, new Message<Null, string> { Value = message });
-                    Console.WriteLine($"Параметры смешивания компонентов: {message}");
+                    Console.WriteLine($"Параметры резки массива: {message}");
                 }
                 catch (ProduceException<Null, string> e)
                 {
-                    Console.WriteLine($"Ошибка отправки параметров смешивания компонентов: {e.Error.Reason}");
+                    Console.WriteLine($"Ошибка отправки параметров резки массива: {e.Error.Reason}");
                 }
 
                 await Task.Delay(1000);

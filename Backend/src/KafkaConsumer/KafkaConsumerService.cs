@@ -6,6 +6,7 @@ public class KafkaConsumerService : BackgroundService
 {
     private const string MixingComponentsProducerTopic = "mixing_components_producer";
     private const string MoldingAndInitialExposureProducerTopic = "molding_and_initial_exposure_producer";
+    private const string CuttingArrayProducerTopic = "cutting_array_producer";
     private const string AutoclavingProducerTopic = "autoclaving_producer";
     private const string GroupId = "backend-group";
     private const string BootstrapServers = "kafka:9093";
@@ -21,6 +22,7 @@ public class KafkaConsumerService : BackgroundService
         return Task.WhenAll(
             Task.Run(() => MixingComponentsProducerTopicConsumeMessages(stoppingToken), stoppingToken),
             Task.Run(() => MoldingAndInitialExposureProducerConsumeMessages(stoppingToken), stoppingToken),
+            Task.Run(() => CuttingArrayProducerConsumeMessages(stoppingToken), stoppingToken),
             Task.Run(() => AutoclavingProducerConsumeMessages(stoppingToken), stoppingToken)
         );
     }
@@ -31,6 +33,13 @@ public class KafkaConsumerService : BackgroundService
             "Полученные параметры смешивания компонентов", 
             "Ошибка получения параметров смешивания компонентов" );
     }
+    private void CuttingArrayProducerConsumeMessages(CancellationToken stoppingToken)
+    {
+        ConsumeMessages(stoppingToken, CuttingArrayProducerTopic, 
+            "Полученные параметры резки массива", 
+            "Ошибка получения параметров резки массива" );
+    }
+    
     private void MoldingAndInitialExposureProducerConsumeMessages(CancellationToken stoppingToken)
     {
         ConsumeMessages(stoppingToken, MoldingAndInitialExposureProducerTopic, 
