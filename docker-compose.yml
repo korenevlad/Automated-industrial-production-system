@@ -33,6 +33,13 @@ services:
       - kafka
     environment:
       - KAFKA_BROKER=kafka:9093
+  
+  autoclaving-producer:
+    image: 'autoclaving-producer'
+    depends_on:
+      - kafka
+    environment:
+      - KAFKA_BROKER=kafka:9093
 
   consumer:
     image: 'backend'
