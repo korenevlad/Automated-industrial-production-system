@@ -26,7 +26,14 @@ services:
       - kafka
     environment:
       - KAFKA_BROKER=kafka:9093
-  
+    
+  molding_and_initial_exposure_producer:
+    image: 'molding_and_initial_exposure_producer'
+    depends_on:
+      - kafka
+    environment:
+      - KAFKA_BROKER=kafka:9093
+
   consumer:
     image: 'backend'
     depends_on:
