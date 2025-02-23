@@ -26,3 +26,10 @@ services:
       - kafka
     environment:
       - KAFKA_BROKER=kafka:9093
+  
+  consumer:
+    image: 'backend'
+    depends_on:
+      - kafka
+    environment:
+      - KAFKA_BROKER=kafka:9093
