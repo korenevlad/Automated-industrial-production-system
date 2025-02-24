@@ -48,20 +48,19 @@ services:
     environment:
       - KAFKA_BROKER=kafka:9093
 
-  consumer:
-    image: 'backend'
-    ports:
-      - "5000:5000"
-    depends_on:
-      - kafka
-    environment:
-      - KAFKA_BROKER=kafka:9093
-  
   frontend:
     image: 'frontend'
     ports:
       - "3000:80"
+
+  consumer:
+    image: 'consumer'
+    ports:
+      - "5000:5000"
     depends_on:
-      - consumer
+      - kafka
+      - frontend
+    environment:
+      - KAFKA_BROKER=kafka:9093
   
   

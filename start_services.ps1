@@ -64,5 +64,6 @@ Start-Sleep -Seconds 15
 # Остановка четвёртого продюсера и консюмера
 docker-compose stop autoclaving-producer consumer
 
-# Остановка всех контейнеров
-docker-compose down
+# Остановка Kafka и Zookeeper
+docker-compose stop kafka zookeeper
+
