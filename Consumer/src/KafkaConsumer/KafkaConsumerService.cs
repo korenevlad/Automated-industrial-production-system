@@ -72,7 +72,7 @@ public class KafkaConsumerService : BackgroundService
                 {
                     var consumeResult = consumer.Consume(stoppingToken);
                     Console.WriteLine($"{successMessage}: {consumeResult.Value}");
-                    await _hubContext.Clients.All.SendAsync("Message", topic, consumeResult.Value);
+                    await _hubContext.Clients.All.SendAsync("ReceiveMessage", topic, consumeResult.Value);
                 }
                 catch (ConsumeException e)
                 {
