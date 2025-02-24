@@ -1,5 +1,5 @@
 ﻿using Confluent.Kafka;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.SignalR;
 
 namespace KafkaConsumer;
 public class KafkaConsumerService : BackgroundService
@@ -16,6 +16,12 @@ public class KafkaConsumerService : BackgroundService
         GroupId = GroupId,
         AutoOffsetReset = AutoOffsetReset.Earliest
     };
+    private readonly IHubContext<KafkaHub> _hubContext;
+    
+    public KafkaConsumerService(IHubContext<KafkaHub> hubContext)
+    {
+        _hubContext = hubContext;
+    }
     
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -27,34 +33,34 @@ public class KafkaConsumerService : BackgroundService
         );
     }
     
-    private void MixingComponentsProducerTopicConsumeMessages(CancellationToken stoppingToken)
+    private async Task MixingComponentsProducerTopicConsumeMessages(CancellationToken stoppingToken)
     {
-        ConsumeMessages(stoppingToken, MixingComponentsProducerTopic, 
+        await ConsumeMessages(stoppingToken, MixingComponentsProducerTopic, 
             "Полученные параметры смешивания компонентов", 
             "Ошибка получения параметров смешивания компонентов" );
     }
-    private void CuttingArrayProducerConsumeMessages(CancellationToken stoppingToken)
+    private async Task CuttingArrayProducerConsumeMessages(CancellationToken stoppingToken)
     {
-        ConsumeMessages(stoppingToken, CuttingArrayProducerTopic, 
+        await ConsumeMessages(stoppingToken, CuttingArrayProducerTopic, 
             "Полученные параметры резки массива", 
             "Ошибка получения параметров резки массива" );
     }
     
-    private void MoldingAndInitialExposureProducerConsumeMessages(CancellationToken stoppingToken)
+    private async Task MoldingAndInitialExposureProducerConsumeMessages(CancellationToken stoppingToken)
     {
-        ConsumeMessages(stoppingToken, MoldingAndInitialExposureProducerTopic, 
+        await ConsumeMessages(stoppingToken, MoldingAndInitialExposureProducerTopic, 
             "Полученные параметры формования и первичной выдержки", 
             "Ошибка получения параметров формования и первичной выдержки" );
     }
     
-    private void AutoclavingProducerConsumeMessages(CancellationToken stoppingToken)
+    private async Task AutoclavingProducerConsumeMessages(CancellationToken stoppingToken)
     {
-        ConsumeMessages(stoppingToken, AutoclavingProducerTopic, 
+        await ConsumeMessages(stoppingToken, AutoclavingProducerTopic, 
             "Полученные параметры автоклавирования и окончательной обработки", 
             "Ошибка получения параметров автоклавирования и окончательной обработки" );
     }
     
-    private void ConsumeMessages(CancellationToken stoppingToken, string topic, string successMessage, string errorMessage)
+    private async Task ConsumeMessages(CancellationToken stoppingToken, string topic, string successMessage, string errorMessage)
     {
         using var consumer = new ConsumerBuilder<Ignore, string>(_consumerConfig).Build();
         consumer.Subscribe(topic);
@@ -66,6 +72,7 @@ public class KafkaConsumerService : BackgroundService
                 {
                     var consumeResult = consumer.Consume(stoppingToken);
                     Console.WriteLine($"{successMessage}: {consumeResult.Value}");
+                    await _hubContext.Clients.All.SendAsync("Message", topic, consumeResult.Value);
                 }
                 catch (ConsumeException e)
                 {

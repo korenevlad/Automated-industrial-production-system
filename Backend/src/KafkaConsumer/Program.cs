@@ -1,12 +1,17 @@
-﻿using KafkaConsumer;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using KafkaConsumer;
 
-var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices((context, services) =>
-    {
-        services.AddHostedService<KafkaConsumerService>();
-    })
-    .Build();
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSignalR();
 
-await host.RunAsync();
+builder.Services.AddSingleton<KafkaHub>();
+builder.Services.AddHostedService<KafkaConsumerService>();
+
+var app = builder.Build();
+
+app.UseRouting();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<KafkaHub>("/kafkaHub");
+});
+
+await app.RunAsync();
