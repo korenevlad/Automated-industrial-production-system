@@ -1,15 +1,17 @@
 using KafkaConsumer;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins",
+    options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.AllowAnyOrigin()
+            policy.WithOrigins("http://localhost:3000")
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
 });
 
@@ -18,10 +20,8 @@ builder.Services.AddHostedService<KafkaConsumerService>();
 
 var app = builder.Build();
 
-app.UseCors("AllowAllOrigins");
-
 app.UseRouting();
-
+app.UseCors("AllowFrontend");
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<KafkaHub>("/kafkaHub");
