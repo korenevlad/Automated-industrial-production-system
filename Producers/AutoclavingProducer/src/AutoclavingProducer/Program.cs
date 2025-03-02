@@ -22,9 +22,10 @@ public class Program
                 var remainingTime = timerDuration - elapsedTime;
                 var sensorData = new
                 {
+                    Time = DateTime.UtcNow.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss"),
                     Temperature = GenerateBoxMuller(temperature[0], temperature[1]),
                     Pressure = GenerateBoxMuller(pressure[0], pressure[1]),
-                    Time = remainingTime.ToString("c")
+                    Remaining_process_time = remainingTime.ToString("c")
                 };
                 string message = JsonSerializer.Serialize(sensorData);
                 try

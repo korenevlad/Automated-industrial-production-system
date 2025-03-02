@@ -8,8 +8,8 @@ public class Program
     {
         var config = new ProducerConfig { BootstrapServers = "kafka:9093" };
         var topic = "mixing_components_producer";
-        double[] temperature = { 45, 0.5};
-        double[] speed = { 50, 0.5};
+        double[] temperature_mixture = { 45, 0.5};
+        double[] mixing_speed = { 50, 0.5};
         
         var timerDuration = TimeSpan.FromMinutes(5);
         var startTime = DateTime.UtcNow;
@@ -23,9 +23,10 @@ public class Program
 
                 var sensorData = new
                 {
-                    Temperature = GenerateBoxMuller(temperature[0], temperature[1]),
-                    Speed = GenerateBoxMuller(speed[0], speed[1]),
-                    Time = remainingTime.ToString("c")
+                    Time = DateTime.UtcNow.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss"),
+                    Temperature_mixture = GenerateBoxMuller(temperature_mixture[0], temperature_mixture[1]),
+                    Mixing_speed = GenerateBoxMuller(mixing_speed[0], mixing_speed[1]),
+                    Remaining_process_time = remainingTime.ToString("c")
                 };
                 string message = JsonSerializer.Serialize(sensorData);
                 try

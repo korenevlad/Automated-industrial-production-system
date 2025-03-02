@@ -17,6 +17,7 @@ public class Program
             {
                 var sensorData = new
                 {
+                    Time = DateTime.UtcNow.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss"),
                     Pressure = GenerateBoxMuller(pressure[0], pressure[1]),
                     Speed = GenerateBoxMuller(speed[0], speed[1]),
                 };
