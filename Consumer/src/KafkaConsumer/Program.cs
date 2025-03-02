@@ -1,7 +1,16 @@
 using KafkaConsumer;
+using KafkaConsumer.DataAccess.Data;
+using KafkaConsumer.DataAccess.Repository;
+using KafkaConsumer.DataAccess.Repository.Implementation;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://0.0.0.0:5000");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddCors(options =>
 {
