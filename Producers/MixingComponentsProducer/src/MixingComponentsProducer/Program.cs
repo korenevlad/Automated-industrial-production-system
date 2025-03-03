@@ -23,7 +23,7 @@ public class Program
 
                 var sensorData = new
                 {
-                    Time = DateTime.UtcNow.AddHours(3),
+                    Time = DateTime.UtcNow,
                     Temperature_mixture = GenerateBoxMuller(temperature_mixture[0], temperature_mixture[1]),
                     Mixing_speed = GenerateBoxMuller(mixing_speed[0], mixing_speed[1]),
                     Remaining_process_time = remainingTime

@@ -10,4 +10,8 @@ public class ApplicationDbContext : DbContext
     
     private DbSet<Mixing_process> mixing_process  { get; set; }
     private DbSet<Parameters_mixing_process> parameters_mixing_process {get; set; }
+    
+    private DbSet<Molding_and_initial_exposure_process> molding_and_initial_exposure_process {get; set; }
+    private DbSet<Parameters_molding_and_initial_exposure_process> parameters_molding_and_initial_exposure_process { get; set; } 
+    
 }

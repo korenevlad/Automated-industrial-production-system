@@ -22,9 +22,9 @@ public class Program
                 
                 var sensorData = new
                 {
-                    Time = DateTime.UtcNow.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss"),
+                    Time = DateTime.UtcNow,
                     Temperature = GenerateBoxMuller(temperature[0], temperature[1]),
-                    Remaining_process_time = remainingTime.ToString("c")
+                    Remaining_process_time = remainingTime
                 };
 
                 string message = JsonSerializer.Serialize(sensorData);

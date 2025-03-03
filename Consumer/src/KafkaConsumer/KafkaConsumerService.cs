@@ -28,6 +28,9 @@ public class KafkaConsumerService : BackgroundService
     private bool _startedMixingProcess;
     private Mixing_process _mixingProcess;
     
+    private bool _startedMoldingProcess;
+    private Molding_and_initial_exposure_process _moldingProcess;
+    
     public KafkaConsumerService(IHubContext<KafkaHub> hubContext, IUnitOfWork unitOfWork)
     {
         _hubContext = hubContext;
@@ -38,6 +41,9 @@ public class KafkaConsumerService : BackgroundService
         
         _startedMixingProcess = false;
         _mixingProcess = new Mixing_process();
+
+        _startedMoldingProcess = false;
+        _moldingProcess = new Molding_and_initial_exposure_process();
     }
     
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -89,12 +95,15 @@ public class KafkaConsumerService : BackgroundService
                 {
                     var consumeResult = consumer.Consume(stoppingToken);
                     Console.WriteLine($"{successMessage}: {consumeResult.Value}");
-
-                    if (topic == MixingComponentsProducerTopic)
+                    switch (topic)
                     {
-                        SaveMessageInDatabase(consumeResult);
+                        case MixingComponentsProducerTopic:
+                            SaveMessageFromMixingInDatabase(consumeResult);
+                            break;
+                        case MoldingAndInitialExposureProducerTopic:
+                            SaveMessageFromMoldingInDatabase(consumeResult);
+                            break;
                     }
-                    
                     await _hubContext.Clients.All.SendAsync("ReceiveMessage", topic, consumeResult.Value);
                 }
                 catch (ConsumeException e)
@@ -108,68 +117,75 @@ public class KafkaConsumerService : BackgroundService
             consumer.Close();
         }
     }
-
-
-    private void SaveMessageInDatabase(ConsumeResult<Ignore,string> consumeResult)
+    
+    // Сохранение смешивания
+    private void SaveMessageFromMixingInDatabase(ConsumeResult<Ignore,string> consumeResult)
     {
         try
         {
             var mesasge = JsonSerializer.Deserialize<MixingComponentsProducerMessage>(consumeResult.Value);
             if (!_startedTechnologicalProcess)
             {
-                try
-                {
-                    _unitOfWork.TechnologicalProcessRepository.Add(_technologicalProcess);
-                    _unitOfWork.Save();
-                    _startedTechnologicalProcess = true;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"УПАЛ ТЕХ ПРОЦЕСС {ex.Message}");
-                    throw; 
-                }
-                
+                _unitOfWork.TechnologicalProcessRepository.Add(_technologicalProcess);
+                _unitOfWork.Save();
+                _startedTechnologicalProcess = true;
             }
             if (!_startedMixingProcess)
             {
-                try
-                {
-                    _mixingProcess.Technological_process_of_mixing_process = _technologicalProcess;
-                    _unitOfWork.MixingProcessRepository.Add(_mixingProcess);
-                    _unitOfWork.Save();
-                    _startedMixingProcess = true;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"УПАЛ СМЕШИВАНИЕ {ex.Message}");
-                    throw; 
-                }
-            }
-            try
-            {
-                var messageDbo = new Parameters_mixing_process()
-                {
-                    Mixing_process_of_parameters = _mixingProcess,
-                    init_time = mesasge.Time,
-                    temperature_mixture = mesasge.Temperature_mixture,
-                    temperature_mixture_is_normal = true,
-                    mixing_speed = mesasge.Mixing_speed,
-                    mixing_speed_is_normal = true,
-                    remaining_process_time = mesasge.Remaining_process_time
-                };
-                _unitOfWork.ParametersMixingProcessRepository.Add(messageDbo);
+                _mixingProcess.Technological_process_of_mixing_process = _technologicalProcess;
+                _unitOfWork.MixingProcessRepository.Add(_mixingProcess);
                 _unitOfWork.Save();
+                _startedMixingProcess = true;
             }
-            catch (Exception ex)
+            //TODO: ПРОСТАВИТЬ БУЛЫ
+            var messageDbo = new Parameters_mixing_process()
             {
-                Console.WriteLine($"УПАЛИ ПАРАМЕТРЫ {ex.Message}");
-                throw; 
-            }
-            
+                Mixing_process_of_parameters = _mixingProcess,
+                init_time = mesasge.Time,
+                temperature_mixture = mesasge.Temperature_mixture,
+                temperature_mixture_is_normal = true,
+                mixing_speed = mesasge.Mixing_speed,
+                mixing_speed_is_normal = true,
+                remaining_process_time = mesasge.Remaining_process_time
+            };
+            _unitOfWork.ParametersMixingProcessRepository.Add(messageDbo);
+            _unitOfWork.Save();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Ошибка сохранения данных!");
+            Console.WriteLine($"Ошибка сохранения данных смешивания компонентов!");
+            throw;
+        }
+    }
+
+    // Сохранение формования
+    private void SaveMessageFromMoldingInDatabase(ConsumeResult<Ignore, string> consumeResult)
+    {
+        try
+        {
+            var mesasge = JsonSerializer.Deserialize<MoldingProducerMessage>(consumeResult.Value);
+            if (!_startedMoldingProcess)
+            {
+                _moldingProcess.Technological_process_of_molding_process = _technologicalProcess;
+                _unitOfWork.MoldingAndInitialExposureProcessRepository.Add(_moldingProcess);
+                _unitOfWork.Save();
+                _startedMoldingProcess = true;
+            }
+            //TODO: ПРОСТАВИТЬ БУЛЫ
+            var messageDto = new Parameters_molding_and_initial_exposure_process()
+            {
+                Molding_and_initial_exposure_process_of_parameters = _moldingProcess,
+                init_time = mesasge.Time,
+                temperature = mesasge.Temperature,
+                temperature_is_normal = true,
+                remaining_process_time = mesasge.Remaining_process_time
+            };
+            _unitOfWork.ParametersMoldingAndInitialExposureProcessRepository.Add(messageDto);
+            _unitOfWork.Save();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка сохранения данных формования и первичной выдержки!");
             throw;
         }
     }
