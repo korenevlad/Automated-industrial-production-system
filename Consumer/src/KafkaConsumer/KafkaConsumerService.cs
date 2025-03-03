@@ -31,6 +31,9 @@ public class KafkaConsumerService : BackgroundService
     private bool _startedMoldingProcess;
     private Molding_and_initial_exposure_process _moldingProcess;
     
+    private bool _startedCuttingArrayProcess;
+    private Cutting_array_process _cuttingArrayProcess;
+    
     public KafkaConsumerService(IHubContext<KafkaHub> hubContext, IUnitOfWork unitOfWork)
     {
         _hubContext = hubContext;
@@ -44,6 +47,9 @@ public class KafkaConsumerService : BackgroundService
 
         _startedMoldingProcess = false;
         _moldingProcess = new Molding_and_initial_exposure_process();
+
+        _startedCuttingArrayProcess = false;
+        _cuttingArrayProcess = new Cutting_array_process();
     }
     
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -103,6 +109,9 @@ public class KafkaConsumerService : BackgroundService
                         case MoldingAndInitialExposureProducerTopic:
                             SaveMessageFromMoldingInDatabase(consumeResult);
                             break;
+                        case CuttingArrayProducerTopic:
+                            SaveMessageFromСuttingArrayInDatabase(consumeResult);
+                            break;
                     }
                     await _hubContext.Clients.All.SendAsync("ReceiveMessage", topic, consumeResult.Value);
                 }
@@ -153,7 +162,7 @@ public class KafkaConsumerService : BackgroundService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Ошибка сохранения данных смешивания компонентов!");
+            Console.WriteLine($"Ошибка сохранения данных смешивания компонентов! {ex.Message}");
             throw;
         }
     }
@@ -185,7 +194,40 @@ public class KafkaConsumerService : BackgroundService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Ошибка сохранения данных формования и первичной выдержки!");
+            Console.WriteLine($"Ошибка сохранения данных формования и первичной выдержки! {ex.Message}");
+            throw;
+        }
+    }
+    
+    // Сохранение резки массива
+    private void SaveMessageFromСuttingArrayInDatabase(ConsumeResult<Ignore, string> consumeResult)
+    {
+        try
+        {
+            var mesasge = JsonSerializer.Deserialize<СuttingArrayProducerMessage>(consumeResult.Value);
+            if (!_startedCuttingArrayProcess)
+            {
+                _cuttingArrayProcess.Technological_process_of_mixing_process = _technologicalProcess;
+                _unitOfWork.CuttingArrayProcessRepository.Add(_cuttingArrayProcess);
+                _unitOfWork.Save();
+                _startedCuttingArrayProcess = true;
+            }
+            //TODO: ПРОСТАВИТЬ БУЛЫ
+            var messageDto = new Parameters_cutting_array_process()
+            {
+                cutting_array_process_of_parameters = _cuttingArrayProcess,
+                init_time = mesasge.Time,
+                pressure = mesasge.Pressure,
+                pressure_is_normal = true,
+                speed = mesasge.Speed,
+                speed_is_normal = true
+            };
+            _unitOfWork.ParametersCuttingArrayProcess.Add(messageDto);
+            _unitOfWork.Save();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка сохранения данных резки массива! {ex.Message}");
             throw;
         }
     }

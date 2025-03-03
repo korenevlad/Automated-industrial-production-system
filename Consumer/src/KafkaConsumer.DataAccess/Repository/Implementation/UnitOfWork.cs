@@ -9,6 +9,9 @@ public class UnitOfWork : IUnitOfWork
     public IParametersMixingProcessRepository ParametersMixingProcessRepository { get; }
     public IMoldingAndInitialExposureProcessRepository MoldingAndInitialExposureProcessRepository { get; }
     public IParametersMoldingAndInitialExposureProcessRepository ParametersMoldingAndInitialExposureProcessRepository { get; }
+    public ICuttingArrayProcessRepository CuttingArrayProcessRepository { get; }
+    public IParametersCuttingArrayProcess ParametersCuttingArrayProcess { get; }
+
     public UnitOfWork(ApplicationDbContext db)
     {
         _db = db;
@@ -17,6 +20,8 @@ public class UnitOfWork : IUnitOfWork
         ParametersMixingProcessRepository = new ParametersMixingProcessRepository(_db);
         MoldingAndInitialExposureProcessRepository = new MoldingAndInitialExposureProcessRepository(_db);
         ParametersMoldingAndInitialExposureProcessRepository = new ParametersMoldingAndInitialExposureProcessRepository(_db);
+        CuttingArrayProcessRepository = new CuttingArrayProcessRepository(_db);
+        ParametersCuttingArrayProcess = new ParametersCuttingArrayProcess(_db);
     }
     public void Save()
     {

@@ -7,5 +7,7 @@ public interface IUnitOfWork
     IParametersMixingProcessRepository ParametersMixingProcessRepository { get; }
     IMoldingAndInitialExposureProcessRepository MoldingAndInitialExposureProcessRepository { get; }
     IParametersMoldingAndInitialExposureProcessRepository ParametersMoldingAndInitialExposureProcessRepository { get; }
+    ICuttingArrayProcessRepository CuttingArrayProcessRepository { get; }
+    IParametersCuttingArrayProcess ParametersCuttingArrayProcess { get; }
     void Save();
 }
