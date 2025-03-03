@@ -10,7 +10,9 @@ public class UnitOfWork : IUnitOfWork
     public IMoldingAndInitialExposureProcessRepository MoldingAndInitialExposureProcessRepository { get; }
     public IParametersMoldingAndInitialExposureProcessRepository ParametersMoldingAndInitialExposureProcessRepository { get; }
     public ICuttingArrayProcessRepository CuttingArrayProcessRepository { get; }
-    public IParametersCuttingArrayProcess ParametersCuttingArrayProcess { get; }
+    public IParametersCuttingArrayProcessRepository ParametersCuttingArrayProcessRepository { get; }
+    public IAutoclavingProcessRepository AutoclavingProcessRepository { get; }
+    public IParametersAutoclavingProcessRepository ParametersAutoclavingProcessRepository { get; }
 
     public UnitOfWork(ApplicationDbContext db)
     {
@@ -21,7 +23,9 @@ public class UnitOfWork : IUnitOfWork
         MoldingAndInitialExposureProcessRepository = new MoldingAndInitialExposureProcessRepository(_db);
         ParametersMoldingAndInitialExposureProcessRepository = new ParametersMoldingAndInitialExposureProcessRepository(_db);
         CuttingArrayProcessRepository = new CuttingArrayProcessRepository(_db);
-        ParametersCuttingArrayProcess = new ParametersCuttingArrayProcess(_db);
+        ParametersCuttingArrayProcessRepository = new ParametersCuttingArrayProcessRepository(_db);
+        AutoclavingProcessRepository = new AutoclavingProcessRepository(_db);
+        ParametersAutoclavingProcessRepository = new ParametersAutoclavingProcessRepository(_db);
     }
     public void Save()
     {

@@ -24,8 +24,8 @@ public class Program
                 var sensorData = new
                 {
                     Time = DateTime.UtcNow,
-                    Temperature_mixture = GenerateBoxMuller(temperature_mixture[0], temperature_mixture[1]),
-                    Mixing_speed = GenerateBoxMuller(mixing_speed[0], mixing_speed[1]),
+                    Temperature_mixture = GenerateBoxMuller(temperature_mixture[0], temperature_mixture[1], 44.5, 45.5, 0.1),
+                    Mixing_speed = GenerateBoxMuller(mixing_speed[0], mixing_speed[1], 49.5, 50.5, 0.1),
                     Remaining_process_time = remainingTime
                 };
                 string message = JsonSerializer.Serialize(sensorData);
@@ -43,14 +43,21 @@ public class Program
             }
         }
     }
-    
-    private static double GenerateBoxMuller(double current, double deviation)
+    private static double GenerateBoxMuller(double current, double deviation, double errorMin, double errorMax, double errorProbability)
     {
         var random = new Random();
         var u1 = 1.0 - random.NextDouble();
         var u2 = 1.0 - random.NextDouble();
         var randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
-        var temperatureChange = randStdNormal * deviation;
-        return current + temperatureChange;
+        var value = current + (randStdNormal * deviation);
+
+        if (random.NextDouble() < errorProbability)
+        {
+            if (random.NextDouble() < 0.5)
+                return errorMin - (random.NextDouble() * deviation);
+            else
+                return errorMax + (random.NextDouble() * deviation);
+        }
+        return value;
     }
 }

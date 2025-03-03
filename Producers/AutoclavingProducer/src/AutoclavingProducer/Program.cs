@@ -22,10 +22,10 @@ public class Program
                 var remainingTime = timerDuration - elapsedTime;
                 var sensorData = new
                 {
-                    Time = DateTime.UtcNow.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss"),
-                    Temperature = GenerateBoxMuller(temperature[0], temperature[1]),
-                    Pressure = GenerateBoxMuller(pressure[0], pressure[1]),
-                    Remaining_process_time = remainingTime.ToString("c")
+                    Time = DateTime.UtcNow,
+                    Temperature = GenerateBoxMuller(temperature[0], temperature[1], 199.5, 200.5, 0.1),
+                    Pressure = GenerateBoxMuller(pressure[0], pressure[1], 1.21995, 1.22005, 0.1),
+                    Remaining_process_time = remainingTime
                 };
                 string message = JsonSerializer.Serialize(sensorData);
                 try
@@ -43,13 +43,21 @@ public class Program
         }
     }
     
-    private static double GenerateBoxMuller(double current, double deviation)
+    private static double GenerateBoxMuller(double current, double deviation, double errorMin, double errorMax, double errorProbability)
     {
         var random = new Random();
         var u1 = 1.0 - random.NextDouble();
         var u2 = 1.0 - random.NextDouble();
         var randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
-        var temperatureChange = randStdNormal * deviation;
-        return current + temperatureChange;
+        var value = current + (randStdNormal * deviation);
+
+        if (random.NextDouble() < errorProbability)
+        {
+            if (random.NextDouble() < 0.5)
+                return errorMin - (random.NextDouble() * deviation);
+            else
+                return errorMax + (random.NextDouble() * deviation);
+        }
+        return value;
     }
 }

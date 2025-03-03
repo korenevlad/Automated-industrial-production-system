@@ -20,4 +20,8 @@ public class ApplicationDbContext : DbContext
     // резка массива
     private DbSet<Cutting_array_process> cutting_array_process { get; set; }
     private DbSet<Parameters_cutting_array_process> parameters_cutting_array_process { get; set; }
+    
+    // автоклавирование
+    private DbSet<Autoclaving_process> autoclaving_process { get; set; } 
+    private DbSet<Parameters_autoclaving_process> parameters_autoclaving_process { get; set; }
 }

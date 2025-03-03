@@ -34,6 +34,9 @@ public class KafkaConsumerService : BackgroundService
     private bool _startedCuttingArrayProcess;
     private Cutting_array_process _cuttingArrayProcess;
     
+    private bool _startedAutoclavingProcess;
+    private Autoclaving_process _autoclavingProcess;
+    
     public KafkaConsumerService(IHubContext<KafkaHub> hubContext, IUnitOfWork unitOfWork)
     {
         _hubContext = hubContext;
@@ -50,6 +53,9 @@ public class KafkaConsumerService : BackgroundService
 
         _startedCuttingArrayProcess = false;
         _cuttingArrayProcess = new Cutting_array_process();
+
+        _startedAutoclavingProcess = false;
+        _autoclavingProcess = new Autoclaving_process();
     }
     
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -112,6 +118,9 @@ public class KafkaConsumerService : BackgroundService
                         case CuttingArrayProducerTopic:
                             SaveMessageFromСuttingArrayInDatabase(consumeResult);
                             break;
+                        case AutoclavingProducerTopic:
+                            SaveMessageFromAutoclavingInDatabase(consumeResult);
+                            break;
                     }
                     await _hubContext.Clients.All.SendAsync("ReceiveMessage", topic, consumeResult.Value);
                 }
@@ -146,15 +155,14 @@ public class KafkaConsumerService : BackgroundService
                 _unitOfWork.Save();
                 _startedMixingProcess = true;
             }
-            //TODO: ПРОСТАВИТЬ БУЛЫ
             var messageDbo = new Parameters_mixing_process()
             {
                 Mixing_process_of_parameters = _mixingProcess,
                 init_time = mesasge.Time,
                 temperature_mixture = mesasge.Temperature_mixture,
-                temperature_mixture_is_normal = true,
+                temperature_mixture_is_normal = (mesasge.Temperature_mixture > 46 || mesasge.Temperature_mixture < 44)? false : true,
                 mixing_speed = mesasge.Mixing_speed,
-                mixing_speed_is_normal = true,
+                mixing_speed_is_normal = (mesasge.Mixing_speed > 51 || mesasge.Mixing_speed < 49) ? false : true,
                 remaining_process_time = mesasge.Remaining_process_time
             };
             _unitOfWork.ParametersMixingProcessRepository.Add(messageDbo);
@@ -180,13 +188,12 @@ public class KafkaConsumerService : BackgroundService
                 _unitOfWork.Save();
                 _startedMoldingProcess = true;
             }
-            //TODO: ПРОСТАВИТЬ БУЛЫ
             var messageDto = new Parameters_molding_and_initial_exposure_process()
             {
                 Molding_and_initial_exposure_process_of_parameters = _moldingProcess,
                 init_time = mesasge.Time,
                 temperature = mesasge.Temperature,
-                temperature_is_normal = true,
+                temperature_is_normal = (mesasge.Temperature > 36 || mesasge.Temperature < 34) ? false : true,
                 remaining_process_time = mesasge.Remaining_process_time
             };
             _unitOfWork.ParametersMoldingAndInitialExposureProcessRepository.Add(messageDto);
@@ -212,22 +219,54 @@ public class KafkaConsumerService : BackgroundService
                 _unitOfWork.Save();
                 _startedCuttingArrayProcess = true;
             }
-            //TODO: ПРОСТАВИТЬ БУЛЫ
             var messageDto = new Parameters_cutting_array_process()
             {
                 cutting_array_process_of_parameters = _cuttingArrayProcess,
                 init_time = mesasge.Time,
                 pressure = mesasge.Pressure,
-                pressure_is_normal = true,
+                pressure_is_normal = (mesasge.Pressure > 36 || mesasge.Pressure < 34) ? false : true,
                 speed = mesasge.Speed,
-                speed_is_normal = true
+                speed_is_normal = (mesasge.Speed > 4100 || mesasge.Speed < 3900) ? false : true
             };
-            _unitOfWork.ParametersCuttingArrayProcess.Add(messageDto);
+            _unitOfWork.ParametersCuttingArrayProcessRepository.Add(messageDto);
             _unitOfWork.Save();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Ошибка сохранения данных резки массива! {ex.Message}");
+            throw;
+        }
+    }
+    
+    // Сохранение резки массива
+    private void SaveMessageFromAutoclavingInDatabase(ConsumeResult<Ignore, string> consumeResult)
+    {
+        try
+        {
+            var mesasge = JsonSerializer.Deserialize<AutoclavingProducerMessage>(consumeResult.Value);
+            if (!_startedAutoclavingProcess)
+            {
+                _autoclavingProcess.Technological_process_of_mixing_process = _technologicalProcess;
+                _unitOfWork.AutoclavingProcessRepository.Add(_autoclavingProcess);
+                _unitOfWork.Save();
+                _startedAutoclavingProcess = true;
+            }
+            var messageDto = new Parameters_autoclaving_process()
+            {
+                autoclaving_process_of_parameters = _autoclavingProcess,
+                init_time = mesasge.Time,
+                temperature = mesasge.Temperature,
+                temperature_is_normal = (mesasge.Temperature < 199 || mesasge.Temperature > 201) ? false : true,
+                pressure = mesasge.Pressure,
+                pressure_is_normal = (mesasge.Pressure < 1.21 || mesasge.Pressure >= 1.23) ? false : true,
+                remaining_process_time = mesasge.Remaining_process_time
+            };
+            _unitOfWork.ParametersAutoclavingProcessRepository.Add(messageDto);
+            _unitOfWork.Save();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка сохранения данных автоклавирования! {ex.Message}");
             throw;
         }
     }

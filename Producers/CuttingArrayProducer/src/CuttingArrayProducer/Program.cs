@@ -18,8 +18,8 @@ public class Program
                 var sensorData = new
                 {
                     Time = DateTime.UtcNow,
-                    Pressure = GenerateBoxMuller(pressure[0], pressure[1]),
-                    Speed = GenerateBoxMuller(speed[0], speed[1]),
+                    Pressure = GenerateBoxMuller(pressure[0], pressure[1], 34.5, 35.5, 0.1),
+                    Speed = GenerateBoxMuller(speed[0], speed[1], 3950, 4050, 0.1),
                 };
                 string message = JsonSerializer.Serialize(sensorData);
                 try
@@ -37,13 +37,21 @@ public class Program
         }
     }
     
-    private static double GenerateBoxMuller(double current, double deviation)
+    private static double GenerateBoxMuller(double current, double deviation, double errorMin, double errorMax, double errorProbability)
     {
         var random = new Random();
         var u1 = 1.0 - random.NextDouble();
         var u2 = 1.0 - random.NextDouble();
         var randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
-        var temperatureChange = randStdNormal * deviation;
-        return current + temperatureChange;
+        var value = current + (randStdNormal * deviation);
+
+        if (random.NextDouble() < errorProbability)
+        {
+            if (random.NextDouble() < 0.5)
+                return errorMin - (random.NextDouble() * deviation);
+            else
+                return errorMax + (random.NextDouble() * deviation);
+        }
+        return value;
     }
 }

@@ -14,7 +14,7 @@ docker-compose up -d mixing-components-producer
 Start-Process pwsh -ArgumentList "-NoExit", "-Command", "docker-compose logs -f mixing-components-producer consumer"
 
 # Время работы первого продюсера 
-Start-Sleep -Seconds 15
+Start-Sleep -Seconds 30
 
 # Остановка первого продюсера
 docker-compose stop mixing-components-producer
@@ -29,7 +29,7 @@ docker-compose up -d molding-and-initial-exposure-producer
 Start-Process pwsh -ArgumentList "-NoExit", "-Command", "docker-compose logs -f molding-and-initial-exposure-producer consumer"
 
 # Время работы второго продюсера
-Start-Sleep -Seconds 15
+Start-Sleep -Seconds 30
 
 # Остановка второго продюсера
 docker-compose stop molding-and-initial-exposure-producer
@@ -44,7 +44,7 @@ docker-compose up -d cutting-array-producer
 Start-Process pwsh -ArgumentList "-NoExit", "-Command", "docker-compose logs -f cutting-array-producer consumer"
 
 # Время работы третьего продюсера
-Start-Sleep -Seconds 15
+Start-Sleep -Seconds 30
 
 # Остановка третьего продюсера
 docker-compose stop cutting-array-producer
@@ -59,7 +59,7 @@ docker-compose up -d autoclaving-producer
 Start-Process pwsh -ArgumentList "-NoExit", "-Command", "docker-compose logs -f autoclaving-producer consumer"
 
 # Время работы четвёртого продюсера
-Start-Sleep -Seconds 15
+Start-Sleep -Seconds 30
 
 # Остановка четвёртого продюсера и консюмера
 docker-compose stop autoclaving-producer consumer

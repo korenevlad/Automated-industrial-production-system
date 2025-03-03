@@ -8,6 +8,8 @@ public interface IUnitOfWork
     IMoldingAndInitialExposureProcessRepository MoldingAndInitialExposureProcessRepository { get; }
     IParametersMoldingAndInitialExposureProcessRepository ParametersMoldingAndInitialExposureProcessRepository { get; }
     ICuttingArrayProcessRepository CuttingArrayProcessRepository { get; }
-    IParametersCuttingArrayProcess ParametersCuttingArrayProcess { get; }
+    IParametersCuttingArrayProcessRepository ParametersCuttingArrayProcessRepository { get; }
+    IAutoclavingProcessRepository AutoclavingProcessRepository { get; }
+    IParametersAutoclavingProcessRepository ParametersAutoclavingProcessRepository { get; }
     void Save();
 }

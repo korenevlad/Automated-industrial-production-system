@@ -2,10 +2,11 @@
 using KafkaConsumer.Models;
 
 namespace KafkaConsumer.DataAccess.Repository.Implementation;
-public class ParametersCuttingArrayProcess : Repository<Parameters_cutting_array_process>, IParametersCuttingArrayProcess
+
+public class AutoclavingProcessRepository : Repository<Autoclaving_process>, IAutoclavingProcessRepository
 {
     private readonly ApplicationDbContext _db;
-    public ParametersCuttingArrayProcess(ApplicationDbContext db) : base(db)
+    public AutoclavingProcessRepository(ApplicationDbContext db) : base(db)
     {
         _db = db;
     }
