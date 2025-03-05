@@ -144,12 +144,14 @@ public class KafkaConsumerService : BackgroundService
             var mesasge = JsonSerializer.Deserialize<MixingComponentsProducerMessage>(consumeResult.Value);
             if (!_startedTechnologicalProcess)
             {
+                _technologicalProcess.date_start = mesasge.Time;
                 _unitOfWork.TechnologicalProcessRepository.Add(_technologicalProcess);
                 _unitOfWork.Save();
                 _startedTechnologicalProcess = true;
             }
             if (!_startedMixingProcess)
             {
+                _mixingProcess.date_start = mesasge.Time;
                 _mixingProcess.Technological_process_of_mixing_process = _technologicalProcess;
                 _unitOfWork.MixingProcessRepository.Add(_mixingProcess);
                 _unitOfWork.Save();
@@ -165,6 +167,8 @@ public class KafkaConsumerService : BackgroundService
                 mixing_speed_is_normal = (mesasge.Mixing_speed > 51 || mesasge.Mixing_speed < 49) ? false : true,
                 remaining_process_time = mesasge.Remaining_process_time
             };
+            _mixingProcess.date_end = mesasge.Time;
+            _unitOfWork.MixingProcessRepository.Update(_mixingProcess);
             _unitOfWork.ParametersMixingProcessRepository.Add(messageDbo);
             _unitOfWork.Save();
         }
@@ -183,6 +187,7 @@ public class KafkaConsumerService : BackgroundService
             var mesasge = JsonSerializer.Deserialize<MoldingProducerMessage>(consumeResult.Value);
             if (!_startedMoldingProcess)
             {
+                _moldingProcess.date_start = mesasge.Time;
                 _moldingProcess.Technological_process_of_molding_process = _technologicalProcess;
                 _unitOfWork.MoldingAndInitialExposureProcessRepository.Add(_moldingProcess);
                 _unitOfWork.Save();
@@ -196,6 +201,8 @@ public class KafkaConsumerService : BackgroundService
                 temperature_is_normal = (mesasge.Temperature > 36 || mesasge.Temperature < 34) ? false : true,
                 remaining_process_time = mesasge.Remaining_process_time
             };
+            _moldingProcess.date_end = mesasge.Time;
+            _unitOfWork.MoldingAndInitialExposureProcessRepository.Update(_moldingProcess);
             _unitOfWork.ParametersMoldingAndInitialExposureProcessRepository.Add(messageDto);
             _unitOfWork.Save();
         }
@@ -214,6 +221,7 @@ public class KafkaConsumerService : BackgroundService
             var mesasge = JsonSerializer.Deserialize<СuttingArrayProducerMessage>(consumeResult.Value);
             if (!_startedCuttingArrayProcess)
             {
+                _cuttingArrayProcess.date_start = mesasge.Time;
                 _cuttingArrayProcess.Technological_process_of_mixing_process = _technologicalProcess;
                 _unitOfWork.CuttingArrayProcessRepository.Add(_cuttingArrayProcess);
                 _unitOfWork.Save();
@@ -228,6 +236,8 @@ public class KafkaConsumerService : BackgroundService
                 speed = mesasge.Speed,
                 speed_is_normal = (mesasge.Speed > 4100 || mesasge.Speed < 3900) ? false : true
             };
+            _cuttingArrayProcess.date_end = mesasge.Time;
+            _unitOfWork.CuttingArrayProcessRepository.Update(_cuttingArrayProcess);
             _unitOfWork.ParametersCuttingArrayProcessRepository.Add(messageDto);
             _unitOfWork.Save();
         }
@@ -246,6 +256,7 @@ public class KafkaConsumerService : BackgroundService
             var mesasge = JsonSerializer.Deserialize<AutoclavingProducerMessage>(consumeResult.Value);
             if (!_startedAutoclavingProcess)
             {
+                _autoclavingProcess.date_start = mesasge.Time;
                 _autoclavingProcess.Technological_process_of_mixing_process = _technologicalProcess;
                 _unitOfWork.AutoclavingProcessRepository.Add(_autoclavingProcess);
                 _unitOfWork.Save();
@@ -261,6 +272,10 @@ public class KafkaConsumerService : BackgroundService
                 pressure_is_normal = (mesasge.Pressure < 1.21 || mesasge.Pressure >= 1.23) ? false : true,
                 remaining_process_time = mesasge.Remaining_process_time
             };
+            _autoclavingProcess.date_end = mesasge.Time;
+            _unitOfWork.AutoclavingProcessRepository.Update(_autoclavingProcess);
+            _technologicalProcess.date_end = mesasge.Time;
+            _unitOfWork.TechnologicalProcessRepository.Update(_technologicalProcess);
             _unitOfWork.ParametersAutoclavingProcessRepository.Add(messageDto);
             _unitOfWork.Save();
         }
@@ -269,5 +284,5 @@ public class KafkaConsumerService : BackgroundService
             Console.WriteLine($"Ошибка сохранения данных автоклавирования! {ex.Message}");
             throw;
         }
-    }
+    } 
 }

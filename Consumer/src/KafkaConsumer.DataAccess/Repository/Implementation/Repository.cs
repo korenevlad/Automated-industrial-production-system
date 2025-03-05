@@ -16,4 +16,8 @@ public class Repository<T> : IRepository<T> where T: class
     {
         var s = _dbSet.Add(obj);
     }
+    public void Update(T obj)
+    {
+        _dbSet.Update(obj);
+    }
 }
