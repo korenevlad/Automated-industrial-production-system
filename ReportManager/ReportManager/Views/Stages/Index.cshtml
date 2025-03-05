@@ -7,25 +7,24 @@
     <div class="container-fluid center-grid">
         <div class="row mx-auto mt-5 mb-5">
             <div class="col-lg-6 text-center">
-                <a asp-controller="   " asp-action="   " class="btn btn-primary btn-lg btn-block form-control">
+                <a asp-controller="Reports" asp-action="Mixing" asp-route-id=@Model class="btn btn-primary btn-lg btn-block form-control"> 
                    1. Подготовка и смешивание компонентов
                 </a>
             </div>
             <div class="col-lg-6 text-center">
-                <a asp-controller="   " asp-action="  " class="btn btn-primary btn-lg btn-block form-control">
+                <a asp-controller="Reports" asp-action="Molding" asp-route-id=@Model class="btn btn-primary btn-lg btn-block form-control">
                     2. Формование и первичная выдержка
                 </a>
             </div>
         </div>
-        
         <div class="row mx-auto mt-5 mb-5">
             <div class="col-lg-6 text-center">
-                <a asp-controller="   " asp-action="  " class="btn btn-primary btn-lg btn-block form-control">
+                <a asp-controller="Reports" asp-action="Cutting" asp-route-id=@Model class="btn btn-primary btn-lg btn-block form-control">
                     3. Резка массива
                 </a>
             </div>
             <div class="col-lg-6 text-center">
-                <a asp-controller="   " asp-action="   " class="btn btn-primary btn-lg btn-block form-control">
+                <a asp-controller="Reports" asp-action="Autoclaving" asp-route-id=@Model class="btn btn-primary btn-lg btn-block form-control">
                     4. Автоклавирование и окончательная обработка
                 </a>
             </div>

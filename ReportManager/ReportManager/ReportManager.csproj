@@ -26,6 +26,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ReportManager.DataAccess\ReportManager.DataAccess.csproj" />
+
+
+
+
+
     </ItemGroup>
 
 

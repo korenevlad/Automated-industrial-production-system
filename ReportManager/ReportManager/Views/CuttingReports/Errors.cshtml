@@ -1,0 +1,30 @@
+﻿@model List<Parameters_cutting_array_process>
+
+<div class="card shadow border-0 mt-5">
+    <div class="card-header bg-primary bg-gradient ml-0 py-2">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="text-white py-2">Отчёт по истории ошибок</h3>
+            </div>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th style="width: 40%;">Время</th>
+            <th style="width: 30%;">Давление резки</th>
+            <th style="width: 30%;">Скорость резки</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in @Model.OrderBy(u => u.init_time))
+        {
+            <tr>
+                <td style="width: 25%;">@item.init_time</td>
+                <td class="@(item.pressure_is_normal ? "" : "bg-danger text-white")"> @item.pressure</td>
+                <td class="@(item.speed_is_normal ? "" : "bg-danger text-white")"> @item.speed</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

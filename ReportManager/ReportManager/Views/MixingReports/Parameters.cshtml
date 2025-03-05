@@ -1,0 +1,32 @@
+﻿@model List<Parameters_mixing_process>
+
+<div class="card shadow border-0 mt-5">
+    <div class="card-header bg-primary bg-gradient ml-0 py-2">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="text-white py-2">Отчёт по истории параметров</h3>
+            </div>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th style="width: 25%;">Время</th>
+            <th style="width: 25%;">Температура смеси</th>
+            <th style="width: 25%;">Скорость смешивания</th>
+            <th style="width: 25%;">Оставшееся время выполнения</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in @Model.OrderBy(u => u.init_time))
+        {
+            <tr>
+                <td style="width: 25%;">@item.init_time</td>
+                <td class="@(item.temperature_mixture_is_normal ? "" : "bg-danger text-white")"> @item.temperature_mixture</td>
+                <td class="@(item.mixing_speed_is_normal ? "" : "bg-danger text-white")"> @item.mixing_speed</td>
+                <td style="width: 25%">@item.remaining_process_time</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
