@@ -13,13 +13,12 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Stages}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

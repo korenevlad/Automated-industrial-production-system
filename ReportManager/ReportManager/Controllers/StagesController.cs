@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReportManager.DataAccess.Repository;
-using ReportManager.Models.Search;
 
 namespace ReportManager.Controllers;
-
 public class StagesController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -11,12 +9,8 @@ public class StagesController : Controller
     {
         _unitOfWork = unitOfWork;
     }
-    public IActionResult Index()
+    public IActionResult Index(Guid id)
     {
-        var model = new TechnologicalProcessSearch()
-        {
-            listOfTechnologicalProcess = _unitOfWork.TechnologicalProcessRepository.GetAll().ToList()
-        };
-        return View(model);
+        return View(id);
     }
 }
