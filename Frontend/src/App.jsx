@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
+import { useNavigate } from "react-router-dom";
 
 const TOPIC_NAMES = {
   "mixing_components_producer": "Подготовка и смешивание компонентов",
@@ -12,6 +13,8 @@ const KafkaMessages = () => {
   const [messages, setMessages] = useState(
     Object.keys(TOPIC_NAMES).reduce((acc, topic) => ({ ...acc, [topic]: [] }), {})
   );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const connection = new signalR.HubConnectionBuilder()
@@ -48,6 +51,12 @@ const KafkaMessages = () => {
       <h2 className="text-center text-primary mb-4">
         Текущие параметры этапов технологического процесса производства газобетонных блоков
       </h2>
+      <div className="text-left mb-3">
+        <button className="btn btn-success" onClick={() => window.location.href = "http://localhost:8080"}>
+          Перейти в отчёты
+        </button>
+      </div>
+      
       <div className="row justify-content-center mb-4">
         {Object.entries(TOPIC_NAMES)
           .slice(0, 2)

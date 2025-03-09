@@ -60,7 +60,11 @@ services:
     depends_on:
       - kafka
       - frontend
+      - mvc-app
     environment:
       - KAFKA_BROKER=kafka:9093
   
-  
+  mvc-app:
+    image: 'mvc-app'
+    ports:
+      - "8080:87"
