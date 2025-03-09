@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportManager", "ReportManager\ReportManager.csproj", "{AFFEFCE3-0DFA-4061-A943-0D05C4C25CC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportManager", "src\ReportManager\ReportManager.csproj", "{AFFEFCE3-0DFA-4061-A943-0D05C4C25CC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportManager.DataAccess", "ReportManager.DataAccess\ReportManager.DataAccess.csproj", "{06F1F0E5-7347-4B92-A01C-92F6DF8FB478}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportManager.DataAccess", "src\ReportManager.DataAccess\ReportManager.DataAccess.csproj", "{06F1F0E5-7347-4B92-A01C-92F6DF8FB478}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportManager.Models", "ReportManager.Models\ReportManager.Models.csproj", "{7AC220A8-5D8D-4D74-8E29-363D33F35866}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportManager.Models", "src\ReportManager.Models\ReportManager.Models.csproj", "{7AC220A8-5D8D-4D74-8E29-363D33F35866}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

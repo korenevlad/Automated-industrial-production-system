@@ -16,9 +16,6 @@ Start-Process pwsh -ArgumentList "-NoExit", "-Command", "docker-compose logs -f 
 # Время работы первого продюсера 
 Start-Sleep -Seconds 30
 
-# Остановка первого продюсера
-docker-compose stop mixing-components-producer
-
 # Время переключения на второй продюсер
 Start-Sleep -Seconds 5
 
@@ -30,9 +27,6 @@ Start-Process pwsh -ArgumentList "-NoExit", "-Command", "docker-compose logs -f 
 
 # Время работы второго продюсера
 Start-Sleep -Seconds 30
-
-# Остановка второго продюсера
-docker-compose stop molding-and-initial-exposure-producer
 
 # Время переключения на третий продюсер
 Start-Sleep -Seconds 5
@@ -46,9 +40,6 @@ Start-Process pwsh -ArgumentList "-NoExit", "-Command", "docker-compose logs -f 
 # Время работы третьего продюсера
 Start-Sleep -Seconds 30
 
-# Остановка третьего продюсера
-docker-compose stop cutting-array-producer
-
 # Время переключения на третий продюсер
 Start-Sleep -Seconds 5
 
@@ -60,6 +51,15 @@ Start-Process pwsh -ArgumentList "-NoExit", "-Command", "docker-compose logs -f 
 
 # Время работы четвёртого продюсера
 Start-Sleep -Seconds 30
+
+# Остановка первого продюсера
+docker-compose stop mixing-components-producer
+
+# Остановка второго продюсера
+docker-compose stop molding-and-initial-exposure-producer
+
+# Остановка третьего продюсера
+docker-compose stop cutting-array-producer
 
 # Остановка четвёртого продюсера и консюмера
 docker-compose stop autoclaving-producer consumer

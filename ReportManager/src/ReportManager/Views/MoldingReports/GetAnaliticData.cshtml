@@ -1,0 +1,37 @@
+﻿@model MoldingAnaliticData
+
+<div class="card shadow border-0 mt-5">
+    <div class="card-header bg-primary bg-gradient ml-0 py-2">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="text-white py-2">Отчёт на основе анализа параметров формования и первичной выдержки</h3>
+            </div>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th style="width: 20%;"></th>
+            <th style="width: 20%;">Средний показатель</th>
+            <th style="width: 20%;">Максимальный показатель</th>
+            <th style="width: 20%;">Минимальный показатель</th>
+            <th style="width: 20%;">Количество ошибок</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="width: 20%;"><b>Температура</b></td>
+            <td style="width: 20%;">@Model.MediumTemperature</td>
+            <td style="width: 20%">@Model.MaxTemperature</td>
+            <td style="width: 20%">@Model.MinTemperature</td>
+            <td style="width: 20%">@Model.CountErrorsTemperature</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="text-center"><b>Среднее время работы до ошибок</b></td>
+        </tr>
+        <tr>
+            <td colspan="5" class="text-center">@Model.AverageOperatingTimeBeforeFailure</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

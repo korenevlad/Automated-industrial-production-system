@@ -2,23 +2,23 @@
 
 <div class="pt-4">
     <dvi class="col-8">
-        <h3 class="text-black text-opacity-25 text-center pt-5">ОТЧЕТЫ ПОДГОТОВКИ И СМЕШИВАНИЯ КОМПОНЕНТОВ</h3>
+        <h3 class="text-black text-opacity-25 text-center pt-5">ОТЧЕТЫ АВТОКЛАВИРОВАНИЯ И ОКОНЧАТЕЛЬНОЙ ОБРАБОТКИ</h3>
     </dvi>
     <div class="container-fluid center-grid">
         <div class="row mx-auto mt-5 mb-5">
             <div class="col-lg-4 text-center">
-                <a asp-controller="MixingReports" asp-action="Parameters" asp-route-id=@Model class="btn btn-primary btn-lg btn-block form-control"> 
+                <a asp-controller="AutoclavingReports" asp-action="Parameters" asp-route-id=@Model class="btn btn-primary btn-lg btn-block form-control"> 
                     Отчёт по истории параметров
                 </a>
             </div>
             <div class="col-lg-4 text-center">
-                <a asp-controller="MixingReports" asp-action="Errors" asp-route-id=@Model class="btn btn-primary btn-lg btn-block form-control">
+                <a asp-controller="AutoclavingReports" asp-action="Errors" asp-route-id=@Model class="btn btn-primary btn-lg btn-block form-control">
                     Отчёт по истории ошибок
                 </a>
             </div>
             <div class="col-lg-4 text-center">
                 
-                <a asp-controller="" asp-action="" asp-route-id= class="btn btn-primary btn-lg btn-block form-control">
+                <a asp-controller="AutoclavingReports" asp-action="GetAnaliticData" asp-route-id=@Model class="btn btn-primary btn-lg btn-block form-control">
                     Отчёт на основе анализа параметров
                 </a>
             </div>
