@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ReportManager.DataAccess.Repository;
 
 namespace ReportManager.Controllers;
-[Authorize]
 public class StagesController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;

@@ -4,7 +4,6 @@ using ReportManager.Models;
 using ReportManager.Models.ViewModels;
 
 namespace ReportManager.Controllers;
-
 public class AccountController : Controller
 {
     private readonly SignInManager<User> _signInManager;
@@ -16,19 +15,10 @@ public class AccountController : Controller
         _userManager = userManager;
     }
 
-    public IActionResult Login(string? returnUrl = null)
-    {
-        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-        }
-
-        return View(new LoginViewModel());
-    }
+    public IActionResult Login() => View(new LoginViewModel());
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
+    public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -38,14 +28,6 @@ public class AccountController : Controller
         var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
         if (result.Succeeded)
         {
-            if (!string.IsNullOrEmpty(returnUrl) &&
-                Url.IsLocalUrl(returnUrl) &&
-                !returnUrl.Contains("Account/Login") &&
-                returnUrl.Length < 200)
-            {
-                return Redirect(returnUrl);
-            }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -53,9 +35,6 @@ public class AccountController : Controller
         return View(model);
     }
 
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();

@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ReportManager.DataAccess.Repository;
 using ReportManager.Models.Search;
 
 namespace ReportManager.Controllers;
-[Authorize]
+
 public class CuttingReportsController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;

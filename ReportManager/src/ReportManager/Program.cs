@@ -6,11 +6,8 @@ using ReportManager.DataAccess.Repository.Implementation;
 using ReportManager.Models;
 using System.Text.Json;
 
-using Microsoft.AspNetCore.Authorization;
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -27,14 +24,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddAuthentication();
-
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
-});
-
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
@@ -47,15 +36,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}"
-    ).RequireAuthorization();
-
-    endpoints.MapRazorPages();
-});
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
 
@@ -106,7 +89,6 @@ async Task SeedUsers(IServiceProvider serviceProvider)
                 Console.WriteLine($"Создаём пользователя {userData.UserName}");
                 user = new User { UserName = userData.UserName };
                 var result = await userManager.CreateAsync(user, userData.Password);
-                
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, userData.Role);
@@ -128,5 +110,6 @@ async Task SeedUsers(IServiceProvider serviceProvider)
         Console.WriteLine($"Ошибка в SeedUsers: {ex.Message}");
     }
 }
+
 
 record UserSeedModel(string UserName, string Password, string Role);
