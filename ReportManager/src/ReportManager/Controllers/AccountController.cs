@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ReportManager.Models;
 using ReportManager.Models.ViewModels;
 
 namespace ReportManager.Controllers;
+[AllowAnonymous]
 public class AccountController : Controller
 {
     private readonly SignInManager<User> _signInManager;

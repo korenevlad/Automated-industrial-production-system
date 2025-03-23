@@ -24,13 +24,24 @@
                 <div class="collapse navbar-collapse" id="navbarColor01">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" asp-controller="Home" asp-action="Index"> &nbsp&nbsp&nbspНа главную</a>
+                            <a class="nav-link active" asp-controller="Home" asp-action="Index">На главную</a>
                         </li>
                         <li class="nav-item">
-                            <a href="http://localhost:3000" class="nav-link active"> &nbsp&nbsp&nbspПерейти в текущие параметры</a>
+                            <a href="http://localhost:3000" class="nav-link active">Перейти в просмотр текущих параметров</a>
                         </li>
                     </ul>
+                    <ul class="navbar-nav ms-auto">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <form method="post" asp-controller="Account" asp-action="Logout">
+                                    <button type="submit" class="btn btn-outline-danger">Выйти</button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
                 </div>
+
             </div>
         </nav>
     </header>

@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReportManager.DataAccess.Repository;
 using ReportManager.Models.Search;
 
 namespace ReportManager.Controllers;
+[Authorize]
 public class HomeController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
